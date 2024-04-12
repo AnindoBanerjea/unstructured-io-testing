@@ -1,5 +1,7 @@
-altair
 numpy
 pandas
-pydeck
 streamlit
+unstructured-client
+unstructured
+langchain
+langchain_openai

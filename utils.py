@@ -17,12 +17,12 @@ import textwrap
 
 import streamlit as st
 
-
-def show_code(demo):
-    """Showing the code of the demo."""
-    show_code = st.sidebar.checkbox("Show code", True)
-    if show_code:
-        # Showing the code of the demo.
-        st.markdown("## Code")
-        sourcelines, _ = inspect.getsourcelines(demo)
-        st.code(textwrap.dedent("".join(sourcelines[1:])))
+def show_navigation():
+    with st.container(border=True):
+        col1,col2,col3,col4=st.columns(4)
+        col1.page_link("Hello.py", label="Home", icon="🏠")
+        col2.page_link("pages/0_Animation_Demo.py", label="Upload PDF with Table", icon="1️⃣")
+        #col3.page_link("pages/1_chat_with_AI.py", label="Chat", icon="2️⃣")
+        #col4.page_link("pages/2_retreival_augmented_chat.py", label="RAG", icon="🌎")
+        #cols=st.columns(len(navList)
+        # col3.page_link("pages/1_chat_with_AI.py", label="Chat", icon="2️⃣", disabled=True)
