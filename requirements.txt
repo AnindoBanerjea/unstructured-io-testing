@@ -3,5 +3,7 @@ pandas
 streamlit
 unstructured-client
 unstructured
-langchain
-langchain_openai
+openai
+langchain-core 
+langchain-community 
+langchain-openai
