@@ -62,13 +62,9 @@ def process_query(table_data):
         """
         prompt = ChatPromptTemplate.from_template(template)
         output_parser = StrOutputParser()
-
-        setup_and_retrieval = RunnableParallel(
-            {"context": table_data, "question": query}
-        )
-        chain = setup_and_retrieval | prompt | model | output_parser
-
-        chain.invoke(query)
+        chain =  prompt | model | output_parser
+        resp=chain.invoke({"context": table_data, "question": query})
+        return resp
 
 
 #
@@ -82,7 +78,8 @@ if uploaded_file is not None:
     file_contents = uploaded_file.getbuffer()
     file_name = uploaded_file.name
     resp, elements, tables, final_text = process_file(file_contents, file_name)
-    process_query(final_text)
+    final_resp=process_query(final_text)
+    st.write(final_resp)
 
 
 
