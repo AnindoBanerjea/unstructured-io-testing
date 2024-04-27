@@ -38,13 +38,18 @@ def process_file(file_contents, file_name):
         print(e)
 
     tables = [el for el in elements if el.category == "Table"]
-    st.write("# START")
     final_text=""
-    for t in tables:
-        table_html = t.metadata.text_as_html
-        final_text += table_html
-        st.write(table_html)
-    st.write("# COMPLETE")
+    for el in elements:
+        if el.category == "Table":
+            table_html = el.metadata.text_as_html
+            final_text += table_html
+        else:
+            new_text = el.text
+            final_text += new_text
+        
+    with st.expander("text output"):
+        st.write(final_text)
+
     return resp, elements, tables, final_text
 
 def get_model():
@@ -52,27 +57,24 @@ def get_model():
     return model
 
 def process_query(table_data):
-    st.write("# Answer question based on table data")
-    if query := st.text_input("What do you want to know?"):
-        model=get_model()
-        template = """Answer the question based only on the following context:
-                {context}
+    model=get_model()
+    template = """Answer the question based only on the following context:
+            {context}
 
-                Question: {question}
-        """
-        prompt = ChatPromptTemplate.from_template(template)
-        output_parser = StrOutputParser()
-        chain =  prompt | model | output_parser
-        resp=chain.invoke({"context": table_data, "question": query})
-        return resp
+            Question: Give the verbatim and full list of criteria that must be answered or requirements that must be met. Do not repeat the question in your answer.
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    output_parser = StrOutputParser()
+    chain =  prompt | model | output_parser
+    resp=chain.invoke({"context": table_data})
+    return resp
 
 
 #
 # Main
 #
 
-st.write("# Welcome to Streamlit! 👋")
-st.markdown("# Upload file with table: PDF")
+st.markdown("# Upload RFP File in PDF Format")
 uploaded_file=st.file_uploader("Upload PDF file",type="pdf")
 if uploaded_file is not None:
     file_contents = uploaded_file.getbuffer()
