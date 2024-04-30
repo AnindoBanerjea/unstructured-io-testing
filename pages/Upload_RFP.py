@@ -43,6 +43,7 @@ def process_file(file_contents, file_name):
         else:
             new_text = el.text
             final_text += new_text
+    
     with open("RFP_requirements.txt", "w") as f:
         f.write(final_text)
         
