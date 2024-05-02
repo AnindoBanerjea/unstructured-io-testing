@@ -23,6 +23,6 @@ def show_navigation():
         col1.page_link("Hello.py", label="Home", icon="🏠")
         col2.page_link("pages/Upload_RFP.py", label="Upload RFP", icon="1️⃣")
         col3.page_link("pages/Query.py", label="Query", icon="2️⃣")
-        #col4.page_link("pages/2_retreival_augmented_chat.py", label="RAG", icon="🌎")
+        col4.page_link("pages/Upload_Response.py", label="Upload Response", icon="🌎")
         #cols=st.columns(len(navList)
         # col3.page_link("pages/1_chat_with_AI.py", label="Chat", icon="2️⃣", disabled=True)
