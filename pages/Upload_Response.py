@@ -34,7 +34,6 @@ def process_file(file_contents, file_name):
     except SDKError as e:
         print(e)
 
-    tables = [el for el in elements if el.category == "Table"]
     final_text=""
     for el in elements:
         if el.category == "Table":
@@ -50,7 +49,7 @@ def process_file(file_contents, file_name):
     with st.expander("text output"):
         st.write(final_text)
 
-    return resp, elements, tables, final_text
+    return
 
 
 
@@ -63,7 +62,7 @@ uploaded_file=st.file_uploader("Upload Reponse file",type="pdf")
 if uploaded_file is not None:
     file_contents = uploaded_file.getbuffer()
     file_name = uploaded_file.name
-    resp, elements, tables, final_text = process_file(file_contents, file_name)
+    process_file(file_contents, file_name)
     st.write("Processing complete")
 
 

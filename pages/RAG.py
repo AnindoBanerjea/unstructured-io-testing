@@ -1,20 +1,14 @@
-import time
-
-import numpy as np
-
 from openai import OpenAI
 import streamlit as st
-import os
-from pinecone import Pinecone, ServerlessSpec, PodSpec
-
-from utils import show_navigation
-show_navigation()
+from pinecone import Pinecone
 
 PINECONE_API_KEY=st.secrets['PINECONE_API_KEY']
 PINECONE_API_ENV=st.secrets['PINECONE_API_ENV']
 PINECONE_INDEX_NAME=st.secrets['PINECONE_INDEX_NAME']
-
 client=OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
+
+from utils import show_navigation
+show_navigation()
 
 def augmented_content(inp):
     # Create the embedding using OpenAI keys
@@ -22,15 +16,23 @@ def augmented_content(inp):
     # Return the top 5 results
     embedding=client.embeddings.create(model="text-embedding-ada-002", input=inp).data[0].embedding
     pc = Pinecone(api_key=PINECONE_API_KEY)
-    #pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
     index = pc.Index(PINECONE_INDEX_NAME)
-    results=index.query(vector=embedding,top_k=3,namespace="",include_metadata=True)
+    results=index.query(vector=embedding,top_k=1,namespace="",include_metadata=True)
     #print(f"Results: {results}")
-    with st.sidebar.expander("RAG Augmentation"):
-        st.write(f"Results: {results}")
+    #with st.sidebar.expander("RAG Augmentation"):
+    #    st.write(f"Results: {results}")
     rr=[ r['metadata']['text'] for r in results['matches']]
-    #print(f"RR: {rr}")
-    #st.write(f"RR: {rr}")
+    result_index = 0
+    for r in results['matches']:
+        idx = r['metadata']['index'] 
+        nextresult = index.query(vector=embedding,filter={"index": idx+1},top_k=1,namespace="",include_metadata=True)
+        #print(f"Index+1: {nextresult}")
+        rr[result_index] += nextresult['matches'][0]['metadata']['text']
+        nextresult = index.query(vector=embedding,filter={"index": idx+2},top_k=1,namespace="",include_metadata=True)
+        #print(f"Index+2: {nextresult}")
+        rr[result_index] += nextresult['matches'][0]['metadata']['text']
+        result_index += 1
+
     return rr
 
 
@@ -47,13 +49,13 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input("Input a requirement to generate a response to?"):
     retreived_content = augmented_content(prompt)
     #print(f"Retreived content: {retreived_content}")
     prompt_guidance=f"""
-Please guide the user with the following information:
+Here is previous RFP Response example:
 {retreived_content}
-The user's question was: {prompt}
+Do not format the response as a letter. This response will go into a list of many responses. Do not generate any header or footer. Generate a response for the following requirement: {prompt}
     """
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -77,5 +79,5 @@ The user's question was: {prompt}
         message_placeholder.markdown(full_response)
 
     with st.sidebar.expander("Retreival context provided to GPT-3"):
-        st.write(f"{retreived_content}")
+        st.write(f"{prompt_guidance}")
     st.session_state.messages.append({"role": "assistant", "content": full_response})

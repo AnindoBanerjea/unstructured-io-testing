@@ -1,12 +1,11 @@
 import streamlit as st
-
-from utils import show_navigation
-show_navigation()
-
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+
+from utils import show_navigation
+show_navigation()
 
 def get_model():
     model = ChatOpenAI(model="gpt-3.5-turbo", api_key=st.secrets['OPENAI_API_KEY'])
