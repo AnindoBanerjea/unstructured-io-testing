@@ -19,11 +19,12 @@ import streamlit as st
 
 def show_navigation():
     with st.container(border=True):
-        col1,col2,col3,col4,col5=st.columns(5)
+        col1,col2,col3,col4,col5,col6=st.columns(6)
         col1.page_link("Hello.py", label="Home", icon="🏠")
-        col2.page_link("pages/Upload_RFP.py", label="Upload RFP", icon="1️⃣")
+        col2.page_link("pages/Upload_RFP.py", label="RFP", icon="1️⃣")
         col3.page_link("pages/Query.py", label="Query", icon="2️⃣")
-        col4.page_link("pages/Upload_Response.py", label="Upload Response", icon="🌎")
+        col4.page_link("pages/Upload_Response.py", label="Response", icon="🌎")
         col5.page_link("pages/Chunk.py", label="Chunk")
+        col6.page_link("pages/RAG.py", label="RAG")
         #cols=st.columns(len(navList)
         # col3.page_link("pages/1_chat_with_AI.py", label="Chat", icon="2️⃣", disabled=True)
