@@ -39,10 +39,10 @@ def process_file(file_contents, file_name):
     for el in elements:
         if el.category == "Table":
             table_html = el.metadata.text_as_html
-            final_text += table_html
+            final_text += table_html + "\n"
         else:
             new_text = el.text
-            final_text += new_text
+            final_text += new_text + "\n"
     
     with open("RFP_response.txt", "w") as f:
         f.write(final_text)
