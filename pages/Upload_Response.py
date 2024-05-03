@@ -6,7 +6,7 @@ from unstructured_client.models.errors import SDKError
 
 from unstructured.staging.base import dict_to_elements
 
-
+import pprint
 
 
 from utils import show_navigation
@@ -40,6 +40,7 @@ def process_file(file_contents, file_name):
             table_html = el.metadata.text_as_html
             final_text += table_html + "\n"
         else:
+            print(f"Parent_id: {el.metadata.parent_id}\nCategory depth: {el.metadata.category_depth} text: {el.text}")
             new_text = el.text
             final_text += new_text + "\n"
     
