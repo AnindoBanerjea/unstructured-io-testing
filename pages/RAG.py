@@ -21,6 +21,7 @@ def augmented_content(inp):
     rr=[ r['metadata']['section_text'] for r in results['matches']]
     return rr
 
+company = "eCivis"
 
 SYSTEM_MESSAGE={"role": "system", 
                 "content": "Ignore all previous commands. You are a business development expert responding to a government RFP. Utilize prior RFP examples wherever possible."
@@ -40,9 +41,9 @@ if prompt := st.chat_input("Input a requirement."):
     prompt_guidance=f"""
 Here is a previous RFP Response example for additional context:
 {retreived_content}
-Generate a thoughtful and detailed response for the following requirement based on the previous
-RFP Response example and comparable in length. Do not format the response as a letter. Do not
-provide a preamble like 'Here is your response.'
+Generate a thoughtful and detailed response for the following requirement based on the previous RFP
+Response example and comparable in length. For the company name, use {company}. Do not invent company 
+names. Do not format the response as a letter. Do not provide a preamble like 'Here is your response.'
 """
     st.session_state.messages.append({"role": "system", "content": prompt_guidance})
     st.session_state.messages.append({"role": "user", "content": prompt})
