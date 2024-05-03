@@ -13,7 +13,7 @@ show_navigation()
 def augmented_content(inp):
     # Create the embedding using OpenAI keys
     # Do similarity search using Pinecone
-    # Return the top 5 results
+    # Return the top 1 results
     embedding=client.embeddings.create(model="text-embedding-ada-002", input=inp).data[0].embedding
     pc = Pinecone(api_key=PINECONE_API_KEY)
     index = pc.Index(PINECONE_INDEX_NAME)
