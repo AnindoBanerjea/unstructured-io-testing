@@ -35,7 +35,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if prompt := st.chat_input("Input a requirement to generate a response to?"):
+if prompt := st.chat_input("Input a requirement."):
     retreived_content = augmented_content(prompt)
     prompt_guidance=f"""
 Here is a previous RFP Response example:
