@@ -18,21 +18,7 @@ def augmented_content(inp):
     pc = Pinecone(api_key=PINECONE_API_KEY)
     index = pc.Index(PINECONE_INDEX_NAME)
     results=index.query(vector=embedding,top_k=1,namespace="",include_metadata=True)
-    #print(f"Results: {results}")
-    #with st.sidebar.expander("RAG Augmentation"):
-    #    st.write(f"Results: {results}")
-    rr=[ r['metadata']['text'] for r in results['matches']]
-    result_index = 0
-    for r in results['matches']:
-        idx = r['metadata']['index'] 
-        nextresult = index.query(vector=embedding,filter={"index": idx+1},top_k=1,namespace="",include_metadata=True)
-        #print(f"Index+1: {nextresult}")
-        rr[result_index] += nextresult['matches'][0]['metadata']['text']
-        nextresult = index.query(vector=embedding,filter={"index": idx+2},top_k=1,namespace="",include_metadata=True)
-        #print(f"Index+2: {nextresult}")
-        rr[result_index] += nextresult['matches'][0]['metadata']['text']
-        result_index += 1
-
+    rr=[ r['metadata']['section_text'] for r in results['matches']]
     return rr
 
 
@@ -51,7 +37,6 @@ for message in st.session_state.messages:
 
 if prompt := st.chat_input("Input a requirement to generate a response to?"):
     retreived_content = augmented_content(prompt)
-    #print(f"Retreived content: {retreived_content}")
     prompt_guidance=f"""
 Here is previous RFP Response example:
 {retreived_content}
@@ -72,7 +57,6 @@ Do not format the response as a letter. This response will go into a list of man
             model="gpt-3.5-turbo",
             messages=messageList, stream=True):
             delta_response=response.choices[0].delta
-            # print(f"Delta response: {delta_response}")
             if delta_response.content:
                 full_response += delta_response.content
             message_placeholder.markdown(full_response + "▌")

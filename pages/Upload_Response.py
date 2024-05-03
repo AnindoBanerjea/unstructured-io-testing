@@ -6,7 +6,7 @@ from unstructured_client.models.errors import SDKError
 
 from unstructured.staging.base import dict_to_elements
 
-import pprint
+import json
 
 
 from utils import show_navigation
@@ -35,18 +35,34 @@ def process_file(file_contents, file_name):
         print(e)
 
     final_text=""
+    section_text = ""
+    sections = []
     for el in elements:
         if el.category == "Table":
-            table_html = el.metadata.text_as_html
-            final_text += table_html + "\n"
+            table_html = el.metadata.text_as_html + "\n"
+            final_text += table_html
+            section_text += table_html
         else:
-            print(f"Parent_id: {el.metadata.parent_id}\nCategory depth: {el.metadata.category_depth} text: {el.text}")
-            new_text = el.text
-            final_text += new_text + "\n"
+            print(f"ID: {el.id} Category: {el.category} Parent_id: {el.metadata.parent_id} Category depth: {el.metadata.category_depth} text: {el.text}")
+            new_text = el.text + "\n"
+            final_text += new_text
+            if el.category == "Title":
+                if section_text != "":
+                    sections.append(section_text)
+                section_text = new_text
+            else:
+                section_text += new_text
+
+    # Write the last section to the sections array
+    if section_text != "":
+        sections.append(section_text)
     
     with open("RFP_response.txt", "w") as f:
         f.write(final_text)
-        
+
+    with open("RFP_sections.json", "w") as j:
+        json.dump(sections,j)
+
     with st.expander("text output"):
         st.write(final_text)
 
