@@ -38,30 +38,23 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("Input a requirement."):
     retreived_content = augmented_content(prompt)
     prompt_guidance=f"""
-Here is a previous RFP Response example:
+Here is a previous RFP Response example for additional context:
 {retreived_content}
-Generate a thoughtful and detailed response for the above requirement based on the previous RFP Response example and comparable in length. Do not format the response as a letter.
+Generate a thoughtful and detailed response for the following requirement based on the previous RFP Response example and comparable in length. Do not format the response as a letter.
     """
+    st.session_state.messages.append({"role": "system", "content": prompt_guidance})
     st.session_state.messages.append({"role": "user", "content": prompt})
+
     with st.chat_message("user"):
         st.markdown(prompt)
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
-        
-        messageList=[{"role": m["role"], "content": m["content"]}
-                        for m in st.session_state.messages]
-        messageList.append({"role": "user", "content": prompt_guidance})
-        
-        for response in client.chat.completions.create(
+    with st.chat_message("assistant"):        
+        stream = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=messageList, stream=True):
-            delta_response=response.choices[0].delta
-            if delta_response.content:
-                full_response += delta_response.content
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
+            messages=[{"role": m["role"], "content": m["content"]}
+                        for m in st.session_state.messages], 
+            stream=True)
+        response = st.write_stream(stream)
 
     with st.sidebar.expander("Retreival context provided to GPT-3"):
         st.write(f"{prompt_guidance}")
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+    st.session_state.messages.append({"role": "assistant", "content": response})
