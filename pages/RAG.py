@@ -23,7 +23,7 @@ def augmented_content(inp):
 
 
 SYSTEM_MESSAGE={"role": "system", 
-                "content": "Ignore all previous commands. You are a business development expert responding to a government RFP. Utilize prior RFP examples whereever possible."
+                "content": "Ignore all previous commands. You are a business development expert responding to a government RFP. Utilize prior RFP examples wherever possible."
                 }
 
 if "messages" not in st.session_state:
@@ -38,9 +38,9 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("Input a requirement to generate a response to?"):
     retreived_content = augmented_content(prompt)
     prompt_guidance=f"""
-Here is previous RFP Response example:
+Here is a previous RFP Response example:
 {retreived_content}
-Do not format the response as a letter. This response will go into a list of many responses. Do not generate any header or footer. Generate a response for the following requirement: {prompt}
+Generate a thoughtful and detailed response for the following requirement based on the previous example and comparable in length. Ignore the requirement that is repeated above the response. Do not format the response as a letter: {prompt}
     """
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
