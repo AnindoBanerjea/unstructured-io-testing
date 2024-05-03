@@ -40,7 +40,7 @@ if prompt := st.chat_input("Input a requirement."):
     prompt_guidance=f"""
 Here is a previous RFP Response example:
 {retreived_content}
-Generate a thoughtful and detailed response for the following requirement based on the previous example and comparable in length. Ignore the requirement that is repeated above the response. Do not format the response as a letter: {prompt}
+Generate a thoughtful and detailed response for the above requirement based on the previous RFP Response example and comparable in length. Do not format the response as a letter.
     """
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
