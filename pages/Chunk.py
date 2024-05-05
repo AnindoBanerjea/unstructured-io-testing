@@ -20,13 +20,13 @@ def embed(sections,filename):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000,chunk_overlap  = 200,length_function = len,is_separator_regex = False)
     idx = 0
     file_location = 0
-    for text in sections:
-        docs=text_splitter.create_documents([text])
+    for section_text in sections:
+        docs=text_splitter.create_documents([section_text])
         for d in docs:
             hash=hashlib.md5(d.page_content.encode('utf-8')).hexdigest()
             l = len(d.page_content)
             embedding=client.embeddings.create(model="text-embedding-ada-002", input=d.page_content).data[0].embedding
-            metadata={"hash":hash,"section_text":text,"text":d.page_content,"index":idx,"location":file_location,"size":l,"model":"text-embedding-ada-003","docname":filename}
+            metadata={"hash":hash,"section_text":section_text,"text":d.page_content,"index":idx,"location":file_location,"size":l,"model":"text-embedding-ada-003","docname":filename}
             file_location += l
             idx += 1
             index.upsert([(hash,embedding,metadata)])
