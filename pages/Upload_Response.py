@@ -43,7 +43,6 @@ def process_file(file_contents, file_name):
             final_text += table_html
             section_text += table_html
         else:
-            print(f"ID: {el.id} Category: {el.category} Parent_id: {el.metadata.parent_id} Category depth: {el.metadata.category_depth} text: {el.text}")
             new_text = el.text + "\n"
             final_text += new_text
             if el.category == "Title":
