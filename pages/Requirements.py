@@ -11,17 +11,18 @@ def get_model():
     model = ChatOpenAI(model="gpt-3.5-turbo", api_key=st.secrets['OPENAI_API_KEY'])
     return model
 
-def process_query(table_data):
+def process_query(file_contents):
     model=get_model()
     template = """Answer the question based only on the following context:
-            {context}
+{context}
 
-            Question: Give the verbatim and full list of criteria that must be answered or requirements that must be met. Do not repeat the question in your answer.
-    """
+Question: Give the verbatim and full list of criteria that must be answered 
+or requirements that must be met. Do not repeat the question in your answer.
+"""
     prompt = ChatPromptTemplate.from_template(template)
     output_parser = StrOutputParser()
     chain =  prompt | model | output_parser
-    resp=chain.invoke({"context": table_data})
+    resp=chain.invoke({"context": file_contents})    
     return resp
 
 #
